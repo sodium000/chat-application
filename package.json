@@ -1,0 +1,37 @@
+{
+  "name": "chat-application",
+  "version": "1.0.0",
+  "description": "Learning process to make chat application",
+  "main": "app.js",
+  "scripts": {
+    "start":  " cross-env NODE_ENV=development nodemon app.js",
+    "prod":  " cross-env NODE_ENV=production node app.js"
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sodium000/chat-application.git"
+  },
+  "author": "Tonmoy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sodium000/chat-application/issues"
+  },
+  "homepage": "https://github.com/sodium000/chat-application#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "multer": "^1.4.5-lts.2",
+    "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
