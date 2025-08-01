@@ -30,8 +30,7 @@ global.io = io;
 app.locals.moment = moment;
 
 // database connection
-mongoose
-  .connect(process.env.MONGO_CONNECTION_STRING, {
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
