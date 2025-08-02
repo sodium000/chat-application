@@ -1,5 +1,6 @@
 // external imports
 const express = require("express");
+const mongoose = require("mongoose");
 
 // internal imports
 const { getLogin, login, logout, getRegister, register } = require("../controller/loginController");
@@ -19,11 +20,21 @@ const page_title = "Login";
 
 // health check route for debugging
 router.get("/health", (req, res) => {
+  const envVars = {
+    NODE_ENV: process.env.NODE_ENV || 'not set',
+    MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING ? 'set' : 'not set',
+    COOKIE_SECRET: process.env.COOKIE_SECRET ? 'set' : 'not set',
+    JWT_SECRET: process.env.JWT_SECRET ? 'set' : 'not set',
+    COOKIE_NAME: process.env.COOKIE_NAME || 'token'
+  };
+  
   res.status(200).json({
     status: "OK",
     message: "Server is running",
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development"
+    environment: process.env.NODE_ENV || "development",
+    environmentVariables: envVars,
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 

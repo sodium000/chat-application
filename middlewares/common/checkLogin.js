@@ -9,7 +9,16 @@ const checkLogin = (req, res, next) => {
 
   if (cookies) {
     try {
-      token = cookies[process.env.COOKIE_NAME];
+      const token = cookies[process.env.COOKIE_NAME || 'token'];
+      
+      if (!token) {
+        throw new Error('No token found');
+      }
+      
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET not configured');
+      }
+      
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
 
@@ -19,6 +28,7 @@ const checkLogin = (req, res, next) => {
       }
       next();
     } catch (err) {
+      console.error('Authentication error:', err.message);
       if (res.locals.html) {
         res.redirect("/");
       } else {
@@ -36,7 +46,7 @@ const checkLogin = (req, res, next) => {
       res.redirect("/");
     } else {
       res.status(401).json({
-        error: "Authetication failure!",
+        error: "Authentication failure!",
       });
     }
   }

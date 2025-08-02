@@ -220,23 +220,44 @@ The project includes:
    ```
    https://your-app.vercel.app/health
    ```
+   This will show you:
+   - Server status
+   - Environment variables status
+   - Database connection status
+   - Timestamp
 
 2. **Review Vercel Logs:**
    - Go to Vercel dashboard
    - Select your project
    - Go to "Functions" tab
-   - Check function logs
+   - Check function logs for errors
 
-3. **Test Environment Variables:**
-   - Add console.log statements in your code
-   - Check logs in Vercel dashboard
+3. **Verify Environment Variables:**
+   - Go to Vercel dashboard → Settings → Environment Variables
+   - Ensure these are set for "Production":
+     - `NODE_ENV` = `production`
+     - `MONGO_CONNECTION_STRING` = `your_mongodb_string`
+     - `COOKIE_SECRET` = `your_generated_secret`
+     - `JWT_SECRET` = `your_generated_secret`
+
+4. **Test Environment Variables:**
    - Use the health endpoint to verify environment
+   - Check Vercel function logs for console output
 
-4. **Local Testing:**
+5. **Local Testing:**
    ```bash
    # Test with production environment
    NODE_ENV=production npm run prod
    ```
+
+#### Quick Fix Checklist:
+
+- [ ] Generate secrets: `node generate-secrets.js`
+- [ ] Set all environment variables in Vercel dashboard
+- [ ] Ensure MongoDB Atlas allows all IPs (0.0.0.0/0)
+- [ ] Check health endpoint: `/health`
+- [ ] Review Vercel function logs
+- [ ] Test locally with production environment
 
 ## Project Structure
 

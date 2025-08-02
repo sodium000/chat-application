@@ -17,11 +17,26 @@ const {
   errorHandler,
 } = require("./middlewares/common/errorHandler");
 
-const app = express();
+// Load environment variables
 dotenv.config();
+
+const app = express();
 
 // set comment as app locals
 app.locals.moment = moment;
+
+// Validate required environment variables
+const requiredEnvVars = ['MONGO_CONNECTION_STRING', 'COOKIE_SECRET', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingEnvVars);
+  console.error('Please set these variables in your Vercel dashboard');
+}
+
+// Set default values for optional environment variables
+process.env.COOKIE_NAME = process.env.COOKIE_NAME || 'token';
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // database connection with better error handling
 const connectDB = async () => {
@@ -31,12 +46,12 @@ const connectDB = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
-      console.log("Database connection successful!");
+      console.log("✅ Database connection successful!");
     } else {
-      console.log("MongoDB connection string not provided");
+      console.log("⚠️ MongoDB connection string not provided");
     }
   } catch (err) {
-    console.log("Database connection error:", err.message);
+    console.log("❌ Database connection error:", err.message);
   }
 };
 
@@ -56,6 +71,12 @@ app.use(express.static(path.join(__dirname, "public")));
 // parse cookies with fallback
 app.use(cookieParser(process.env.COOKIE_SECRET || "default-secret"));
 
+// Add request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 // routing setup
 app.use("/", loginRouter);
 app.use("/users", usersRouter);
@@ -71,7 +92,9 @@ app.use(errorHandler);
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`App listening to port ${PORT}`);
+    console.log(`🚀 App listening to port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/health`);
   });
 }
 
