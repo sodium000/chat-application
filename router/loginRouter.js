@@ -17,6 +17,16 @@ const router = express.Router();
 // set page title
 const page_title = "Login";
 
+// health check route for debugging
+router.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 // login page
 router.get("/", decorateHtmlResponse(page_title), redirectLoggedIn, getLogin);
 

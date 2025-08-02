@@ -150,17 +150,93 @@ The project includes:
 
 ### Troubleshooting Vercel Deployment
 
-**Common Issues:**
+**Common Issues and Solutions:**
 
-1. **Build fails**: Check if all dependencies are in `package.json`
-2. **Environment variables not working**: Ensure they're set in Vercel dashboard
-3. **Socket.IO issues**: Vercel supports WebSocket connections
-4. **File uploads**: Vercel has limitations on file uploads (4MB max)
+#### 1. Internal Server Error (500)
+**Causes:**
+- Missing environment variables
+- Database connection issues
+- Socket.IO compatibility issues
+- Missing dependencies
 
 **Solutions:**
-- Check Vercel deployment logs for specific errors
-- Ensure MongoDB Atlas allows connections from all IPs (0.0.0.0/0)
-- Test locally with production environment variables
+- Check Vercel deployment logs in the dashboard
+- Ensure all environment variables are set correctly
+- Test the health check endpoint: `https://your-app.vercel.app/health`
+
+#### 2. Build Fails
+**Causes:**
+- Missing dependencies in `package.json`
+- Node.js version incompatibility
+- Build script errors
+
+**Solutions:**
+- Ensure all dependencies are in `package.json` (not just devDependencies)
+- Check Node.js version compatibility (>= 14.0.0)
+- Review build logs in Vercel dashboard
+
+#### 3. Environment Variables Not Working
+**Causes:**
+- Variables not set in Vercel dashboard
+- Wrong variable names
+- Variables set for wrong environment
+
+**Solutions:**
+- Double-check variable names in Vercel dashboard
+- Ensure variables are set for "Production" environment
+- Test with the health check endpoint
+
+#### 4. Database Connection Issues
+**Causes:**
+- MongoDB Atlas network access restrictions
+- Invalid connection string
+- Missing database credentials
+
+**Solutions:**
+- Allow all IPs (0.0.0.0/0) in MongoDB Atlas Network Access
+- Verify connection string format
+- Check database user permissions
+
+#### 5. Socket.IO Limitations
+**Note:** Vercel serverless functions don't support persistent WebSocket connections.
+- Real-time features will work in development but not in production
+- Messages will still be saved to database
+- Consider using external WebSocket services for real-time features
+
+#### 6. File Upload Issues
+**Limitations:**
+- Vercel has 4MB file upload limit
+- No persistent file storage
+- Files are temporary in serverless environment
+
+**Solutions:**
+- Use external storage (AWS S3, Cloudinary, etc.)
+- Implement client-side file size validation
+- Consider using Vercel's Edge Functions for larger files
+
+#### Debugging Steps:
+
+1. **Check Health Endpoint:**
+   ```
+   https://your-app.vercel.app/health
+   ```
+
+2. **Review Vercel Logs:**
+   - Go to Vercel dashboard
+   - Select your project
+   - Go to "Functions" tab
+   - Check function logs
+
+3. **Test Environment Variables:**
+   - Add console.log statements in your code
+   - Check logs in Vercel dashboard
+   - Use the health endpoint to verify environment
+
+4. **Local Testing:**
+   ```bash
+   # Test with production environment
+   NODE_ENV=production npm run prod
+   ```
 
 ## Project Structure
 
