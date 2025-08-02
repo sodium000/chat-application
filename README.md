@@ -49,33 +49,71 @@ A real-time chat application built with Node.js, Express, Socket.IO, and MongoDB
 5. **Open your browser**
    Navigate to `http://localhost:3000`
 
-## Deployment on Render
+## Deployment on Heroku
 
 ### Quick Deploy Steps
 
+#### Option 1: Deploy to Heroku (CLI)
+
+1. **Install Heroku CLI**
+   ```bash
+   npm install -g heroku
+   ```
+
+2. **Login to Heroku**
+   ```bash
+   heroku login
+   ```
+
+3. **Create Heroku App**
+   ```bash
+   heroku create your-app-name
+   ```
+
+4. **Set Environment Variables**
+   ```bash
+   heroku config:set NODE_ENV=production
+   heroku config:set MONGO_CONNECTION_STRING=your_mongodb_connection_string
+   heroku config:set COOKIE_SECRET=your_cookie_secret_key
+   ```
+
+5. **Deploy to Heroku**
+   ```bash
+   git add .
+   git commit -m "Deploy to Heroku"
+   git push heroku main
+   ```
+
+6. **Open your app**
+   ```bash
+   heroku open
+   ```
+
+#### Option 2: Deploy to Heroku (Dashboard)
+
 1. **Fork this repository** to your GitHub account
-2. **Go to [render.com](https://render.com)** and sign up with your GitHub account
-3. **Click "New +"** and select "Web Service"
-4. **Connect your GitHub repository** and select your forked repo
-5. **Configure the service**:
-   - **Name**: `chat-application` (or your preferred name)
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm run prod`
-6. **Add Environment Variables** in the Environment tab:
+2. **Go to [heroku.com](https://heroku.com)** and sign up
+3. **Click "New"** and select "Create new app"
+4. **Connect your GitHub repository**:
+   - Go to "Deploy" tab
+   - Choose "GitHub" as deployment method
+   - Connect your GitHub account
+   - Select your repository
+5. **Configure Environment Variables** in "Settings" tab:
    - `NODE_ENV`: `production`
-   - `PORT`: `10000`
    - `MONGO_CONNECTION_STRING`: Your MongoDB Atlas connection string
    - `COOKIE_SECRET`: A random secret string
-7. **Click "Create Web Service"**
-8. **Wait for deployment** - your app will be available at `https://your-app-name.onrender.com`
+6. **Deploy**:
+   - Go to "Deploy" tab
+   - Click "Deploy Branch"
+7. **Your app will be available** at `https://your-app-name.herokuapp.com`
 
 ### Environment Variables for Production
 
-Set these environment variables in your Render dashboard:
+Set these environment variables in your Heroku dashboard:
 
 - `NODE_ENV`: `production`
-- `PORT`: `10000`
+- `PORT`: `3000` (Heroku sets this automatically)
 - `MONGO_CONNECTION_STRING`: Your MongoDB Atlas connection string
 - `COOKIE_SECRET`: A random secret string
 
