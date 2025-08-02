@@ -17,6 +17,70 @@ function getLogin(req, res, next) {
   
 }
 
+// get registration page
+function getRegister(req, res, next) {
+  res.render("register", {
+    data: {},
+    errors: {},
+  });
+}
+
+// do registration
+async function register(req, res, next) {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      mobile: req.body.mobile,
+      password: hashedPassword,
+    });
+
+    const result = await newUser.save();
+
+    res.render("index", {
+      data: {
+        username: req.body.email,
+      },
+      errors: {
+        common: {
+          msg: "Registration successful! Please login.",
+        },
+      },
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      // Duplicate key error
+      res.render("register", {
+        data: {
+          name: req.body.name,
+          email: req.body.email,
+          mobile: req.body.mobile,
+        },
+        errors: {
+          common: {
+            msg: "Email or mobile number already exists!",
+          },
+        },
+      });
+    } else {
+      res.render("register", {
+        data: {
+          name: req.body.name,
+          email: req.body.email,
+          mobile: req.body.mobile,
+        },
+        errors: {
+          common: {
+            msg: err.message,
+          },
+        },
+      });
+    }
+  }
+}
+
 // do login
 async function login(req, res, next) {
   try {
@@ -86,4 +150,6 @@ module.exports = {
   getLogin,
   login,
   logout,
+  getRegister,
+  register,
 };

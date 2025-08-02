@@ -2,11 +2,13 @@
 const express = require("express");
 
 // internal imports
-const { getLogin, login, logout } = require("../controller/loginController");
+const { getLogin, login, logout, getRegister, register } = require("../controller/loginController");
 const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
 const {
   doLoginValidators,
   doLoginValidationHandler,
+  doRegisterValidators,
+  doRegisterValidationHandler,
 } = require("../middlewares/login/loginValidators");
 const { redirectLoggedIn } = require("../middlewares/common/checkLogin");
 
@@ -25,6 +27,18 @@ router.post(
   doLoginValidators,
   doLoginValidationHandler,
   login
+);
+
+// registration page
+router.get("/register", decorateHtmlResponse("Register"), redirectLoggedIn, getRegister);
+
+// process registration
+router.post(
+  "/register",
+  decorateHtmlResponse("Register"),
+  doRegisterValidators,
+  doRegisterValidationHandler,
+  register
 );
 
 // logout

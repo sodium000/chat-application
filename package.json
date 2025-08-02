@@ -4,8 +4,9 @@
   "description": "Learning process to make chat application",
   "main": "app.js",
   "scripts": {
-    "start": " cross-env NODE_ENV=development nodemon app.js",
-    "prod": " cross-env NODE_ENV=production node app.js"
+    "start": "cross-env NODE_ENV=development nodemon app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
+    "prod": "cross-env NODE_ENV=production node app.js"
   },
   "repository": {
     "type": "git",
@@ -34,5 +35,8 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
