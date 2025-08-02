@@ -49,34 +49,33 @@ A real-time chat application built with Node.js, Express, Socket.IO, and MongoDB
 5. **Open your browser**
    Navigate to `http://localhost:3000`
 
-## Deployment
+## Deployment on Render
 
-### Quick Deploy Options
+### Quick Deploy Steps
 
-#### Option 1: Render (Recommended)
-1. Fork this repository
-2. Go to [render.com](https://render.com)
-3. Connect your GitHub account
-4. Create a new Web Service
-5. Select your forked repository
-6. Add environment variables in the dashboard
-7. Deploy!
-
-#### Option 2: Railway
-1. Fork this repository
-2. Go to [railway.app](https://railway.app)
-3. Connect your GitHub account
-4. Create a new project
-5. Select your forked repository
-6. Add environment variables
-7. Deploy!
+1. **Fork this repository** to your GitHub account
+2. **Go to [render.com](https://render.com)** and sign up with your GitHub account
+3. **Click "New +"** and select "Web Service"
+4. **Connect your GitHub repository** and select your forked repo
+5. **Configure the service**:
+   - **Name**: `chat-application` (or your preferred name)
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm run prod`
+6. **Add Environment Variables** in the Environment tab:
+   - `NODE_ENV`: `production`
+   - `PORT`: `10000`
+   - `MONGO_CONNECTION_STRING`: Your MongoDB Atlas connection string
+   - `COOKIE_SECRET`: A random secret string
+7. **Click "Create Web Service"**
+8. **Wait for deployment** - your app will be available at `https://your-app-name.onrender.com`
 
 ### Environment Variables for Production
 
-Set these environment variables in your deployment platform:
+Set these environment variables in your Render dashboard:
 
 - `NODE_ENV`: `production`
-- `PORT`: `10000` (or platform default)
+- `PORT`: `10000`
 - `MONGO_CONNECTION_STRING`: Your MongoDB Atlas connection string
 - `COOKIE_SECRET`: A random secret string
 
@@ -131,13 +130,6 @@ chat-application/
 
 This project is licensed under the ISC License.
 
-## Support
-
-For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-For issues and questions:
-- Check the [Issues](https://github.com/your-username/chat-application/issues) page
-- Create a new issue if needed
 
 ---
 
