@@ -39,15 +39,10 @@ const peopleSchema = mongoose.Schema(
   }
 );
 
-const People = mongoose.model("People", peopleSchema);
-
 // Create indexes for better query performance
-People.createIndexes()
-  .then(() => {
-    console.log("✅ Database indexes created successfully");
-  })
-  .catch((err) => {
-    console.log("⚠️ Index creation warning:", err.message);
-  });
+peopleSchema.index({ email: 1 });
+peopleSchema.index({ mobile: 1 });
+
+const People = mongoose.model("People", peopleSchema);
 
 module.exports = People;

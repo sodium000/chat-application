@@ -42,18 +42,20 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const connectDB = async () => {
   try {
     if (process.env.MONGO_CONNECTION_STRING) {
+      console.log("🔄 Connecting to database...");
+      
       await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 15000, // 15 seconds timeout for server selection
         socketTimeoutMS: 45000, // 45 seconds timeout for socket operations
-        bufferCommands: false, // Disable mongoose buffering
-        bufferMaxEntries: 0, // Disable mongoose buffering
         maxPoolSize: 10, // Maximum number of connections in the pool
         minPoolSize: 1, // Minimum number of connections in the pool
         maxIdleTimeMS: 30000, // Maximum time a connection can be idle
         connectTimeoutMS: 15000, // 15 seconds timeout for initial connection
+        heartbeatFrequencyMS: 10000, // How often to send heartbeat to server
+        retryWrites: true, // Retry write operations if they fail
+        w: 'majority', // Write concern
       });
+      
       console.log("✅ Database connection successful!");
       
       // Monitor database connection
@@ -69,16 +71,42 @@ const connectDB = async () => {
         console.log('✅ Database reconnected');
       });
       
+      // Graceful shutdown
+      process.on('SIGINT', async () => {
+        await mongoose.connection.close();
+        console.log('Database connection closed through app termination');
+        process.exit(0);
+      });
+      
     } else {
       console.log("⚠️ MongoDB connection string not provided");
     }
   } catch (err) {
     console.log("❌ Database connection error:", err.message);
+    console.log("Please check your MONGO_CONNECTION_STRING environment variable");
   }
 };
 
-// Connect to database
-connectDB();
+// Connect to database with retry mechanism
+const connectWithRetry = async (retries = 3, delay = 5000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await connectDB();
+      return; // Success, exit the retry loop
+    } catch (error) {
+      console.log(`❌ Connection attempt ${i + 1} failed:`, error.message);
+      if (i < retries - 1) {
+        console.log(`🔄 Retrying in ${delay/1000} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        console.log("❌ All connection attempts failed");
+        throw error;
+      }
+    }
+  }
+};
+
+connectWithRetry();
 
 // request parsers
 app.use(express.json());
@@ -127,6 +155,7 @@ if (process.env.NODE_ENV !== 'production') {
     console.log(`🚀 App listening to port ${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV}`);
     console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+    console.log(`🔗 Health check: http://localhost:${PORT}`);
   });
 }
 
