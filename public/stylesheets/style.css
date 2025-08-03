@@ -657,7 +657,7 @@ input[type="submit"]:active {
   padding-right: 55px;
 }
 
-.password-toggle {
+.toggle-password {
   position: absolute;
   right: 8px;
   top: 50%;
@@ -673,23 +673,24 @@ input[type="submit"]:active {
   justify-content: center;
   min-width: 40px;
   min-height: 40px;
+  color: var(--light);
 }
 
-.password-toggle:hover {
+.toggle-password:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-50%) scale(1.05);
 }
 
-.password-toggle:active {
+.toggle-password:active {
   transform: translateY(-50%) scale(0.95);
 }
 
-.password-toggle.active {
+.toggle-password.active {
   background: var(--green);
   color: var(--dark);
 }
 
-.password-toggle.active:hover {
+.toggle-password.active:hover {
   background: #4ac085;
 }
 

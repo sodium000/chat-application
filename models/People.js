@@ -41,4 +41,13 @@ const peopleSchema = mongoose.Schema(
 
 const People = mongoose.model("People", peopleSchema);
 
+// Create indexes for better query performance
+People.createIndexes()
+  .then(() => {
+    console.log("✅ Database indexes created successfully");
+  })
+  .catch((err) => {
+    console.log("⚠️ Index creation warning:", err.message);
+  });
+
 module.exports = People;

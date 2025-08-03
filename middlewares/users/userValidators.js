@@ -22,11 +22,14 @@ const addUserValidators = [
     .trim()
     .custom(async (value) => {
       try {
-        const user = await User.findOne({ email: value });
+        const user = await User.findOne({ email: value }).maxTimeMS(5000);
         if (user) {
           throw createError("Email already is use!");
         }
       } catch (err) {
+        if (err.message.includes('timed out') || err.message.includes('buffering')) {
+          throw createError("Database connection timeout. Please try again.");
+        }
         throw createError(err.message);
       }
     }),
@@ -37,11 +40,14 @@ const addUserValidators = [
     .withMessage("Mobile number must be a valid Bangladeshi mobile number")
     .custom(async (value) => {
       try {
-        const user = await User.findOne({ mobile: value });
+        const user = await User.findOne({ mobile: value }).maxTimeMS(5000);
         if (user) {
           throw createError("Mobile already is use!");
         }
       } catch (err) {
+        if (err.message.includes('timed out') || err.message.includes('buffering')) {
+          throw createError("Database connection timeout. Please try again.");
+        }
         throw createError(err.message);
       }
     }),

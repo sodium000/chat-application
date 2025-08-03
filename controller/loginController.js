@@ -84,10 +84,10 @@ async function register(req, res, next) {
 // do login
 async function login(req, res, next) {
   try {
-    // find a user who has this email/username
+    // find a user who has this email/username with timeout handling
     const user = await User.findOne({
       $or: [{ email: req.body.username }, { mobile: req.body.username }],
-    });
+    }).maxTimeMS(8000); // 8 second timeout for the query
 
     if (user && user._id) {
       const isValidPassword = await bcrypt.compare(
@@ -127,16 +127,32 @@ async function login(req, res, next) {
       throw createError("Login failed! Please try again.");
     }
   } catch (err) {
-    res.render("index", {
-      data: {
-        username: req.body.username,
-      },
-      errors: {
-        common: {
-          msg: err.message,
+    console.error("Login error:", err.message);
+    
+    // Handle specific database timeout errors
+    if (err.message.includes('timed out') || err.message.includes('buffering')) {
+      res.render("index", {
+        data: {
+          username: req.body.username,
         },
-      },
-    });
+        errors: {
+          common: {
+            msg: "Database connection timeout. Please try again.",
+          },
+        },
+      });
+    } else {
+      res.render("index", {
+        data: {
+          username: req.body.username,
+        },
+        errors: {
+          common: {
+            msg: err.message,
+          },
+        },
+      });
+    }
   }
 }
 

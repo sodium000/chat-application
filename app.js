@@ -38,15 +38,37 @@ if (missingEnvVars.length > 0) {
 process.env.COOKIE_NAME = process.env.COOKIE_NAME || 'token';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-// database connection with better error handling
+// database connection with better error handling and timeout configuration
 const connectDB = async () => {
   try {
     if (process.env.MONGO_CONNECTION_STRING) {
       await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 15000, // 15 seconds timeout for server selection
+        socketTimeoutMS: 45000, // 45 seconds timeout for socket operations
+        bufferCommands: false, // Disable mongoose buffering
+        bufferMaxEntries: 0, // Disable mongoose buffering
+        maxPoolSize: 10, // Maximum number of connections in the pool
+        minPoolSize: 1, // Minimum number of connections in the pool
+        maxIdleTimeMS: 30000, // Maximum time a connection can be idle
+        connectTimeoutMS: 15000, // 15 seconds timeout for initial connection
       });
       console.log("✅ Database connection successful!");
+      
+      // Monitor database connection
+      mongoose.connection.on('error', (err) => {
+        console.error('❌ Database connection error:', err.message);
+      });
+      
+      mongoose.connection.on('disconnected', () => {
+        console.log('⚠️ Database disconnected');
+      });
+      
+      mongoose.connection.on('reconnected', () => {
+        console.log('✅ Database reconnected');
+      });
+      
     } else {
       console.log("⚠️ MongoDB connection string not provided");
     }
@@ -75,6 +97,16 @@ app.use(cookieParser(process.env.COOKIE_SECRET || "default-secret"));
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  res.json({
+    status: 'ok',
+    database: dbStatus,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // routing setup
